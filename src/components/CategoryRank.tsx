@@ -45,7 +45,7 @@ export default function CategoryRankChart({ data, compareMode, yesterdayData, is
     },
   });
 
-  const option = {
+  const option: any = {
     backgroundColor: 'transparent',
     tooltip: {
       trigger: 'axis',

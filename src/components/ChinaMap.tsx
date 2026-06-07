@@ -100,7 +100,7 @@ export default function ChinaMap({ data, compareMode, yesterdayData, isRefreshin
   const visualMap = getVisualMap();
   const emphasisColor = getEmphasisColor();
 
-  const option = {
+  const option: any = {
     backgroundColor: 'transparent',
     tooltip: {
       trigger: 'item',

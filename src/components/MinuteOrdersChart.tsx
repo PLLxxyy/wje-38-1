@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function MinuteOrdersChart({ data, compareMode, yesterdayData, isRefreshing = true }: Props) {
-  const series = [
+  const series: any[] = [
     {
       name: '今日订单量',
       type: 'line',
@@ -51,7 +51,7 @@ export default function MinuteOrdersChart({ data, compareMode, yesterdayData, is
     });
   }
 
-  const option = {
+  const option: any = {
     backgroundColor: 'transparent',
     tooltip: {
       trigger: 'axis',
