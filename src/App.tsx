@@ -67,7 +67,7 @@ export default function App() {
 
       {/* Top: Ticker */}
       <div className="shrink-0 h-16">
-        <OrderTicker orders={latestOrders} />
+        <OrderTicker orders={latestOrders} isRefreshing={isRefreshing} />
       </div>
 
       {/* Main Content */}
@@ -83,6 +83,7 @@ export default function App() {
               compareMode={compareMode}
               yesterdaySales={yesterdayData.sales}
               yesterdayOrders={yesterdayData.orders}
+              isRefreshing={isRefreshing}
             />
           </div>
           <div className="flex-1 min-h-0">
@@ -90,6 +91,7 @@ export default function App() {
               data={categories}
               compareMode={compareMode}
               yesterdayData={yesterdayData.categories}
+              isRefreshing={isRefreshing}
             />
           </div>
         </div>
@@ -100,6 +102,7 @@ export default function App() {
             data={provinces}
             compareMode={compareMode}
             yesterdayData={yesterdayData.provinces}
+            isRefreshing={isRefreshing}
             onSelect={(name) => setSelectedProvince(name)}
           />
         </div>
@@ -111,6 +114,7 @@ export default function App() {
               data={orderStatus}
               compareMode={compareMode}
               yesterdayData={yesterdayData.orderStatus}
+              isRefreshing={isRefreshing}
             />
           </div>
           <div className="flex-1 min-h-0">
@@ -118,6 +122,7 @@ export default function App() {
               data={minuteOrders}
               compareMode={compareMode}
               yesterdayData={yesterdayData.minuteOrders}
+              isRefreshing={isRefreshing}
             />
           </div>
         </div>

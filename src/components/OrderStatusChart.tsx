@@ -5,9 +5,10 @@ interface Props {
   data: OrderStatus[];
   compareMode?: boolean;
   yesterdayData?: OrderStatus[];
+  isRefreshing?: boolean;
 }
 
-export default function OrderStatusChart({ data, compareMode, yesterdayData }: Props) {
+export default function OrderStatusChart({ data, compareMode, yesterdayData, isRefreshing = true }: Props) {
   const colors = ['#f59e0b', '#3b82f6', '#8b5cf6', '#10b981'];
 
   let option: any;
@@ -116,7 +117,12 @@ export default function OrderStatusChart({ data, compareMode, yesterdayData }: P
 
   return (
     <div className="bg-panel-bg rounded-xl p-4 h-full flex flex-col border border-gray-800">
-      <h3 className="text-sm font-semibold text-gray-200 mb-2">订单状态分布</h3>
+      <h3 className="text-sm font-semibold text-gray-200 mb-2 flex items-center">
+        订单状态分布
+        <span className={`ml-2 inline-block w-2 h-2 rounded-full ${
+          isRefreshing ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'
+        }`} />
+      </h3>
       <div className="flex-1 min-h-0">
         <ReactECharts option={option} style={{ height: '100%', width: '100%' }} />
       </div>

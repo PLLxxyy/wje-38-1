@@ -4,9 +4,10 @@ import { ShoppingCart } from 'lucide-react';
 
 interface Props {
   orders: OrderItem[];
+  isRefreshing?: boolean;
 }
 
-export default function OrderTicker({ orders }: Props) {
+export default function OrderTicker({ orders, isRefreshing = true }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -20,6 +21,9 @@ export default function OrderTicker({ orders }: Props) {
       <h3 className="text-sm font-semibold text-gray-200 mb-2 flex items-center gap-1.5">
         <ShoppingCart size={14} className="text-accent" />
         最新成交
+        <span className={`ml-2 inline-block w-2 h-2 rounded-full ${
+          isRefreshing ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'
+        }`} />
       </h3>
       <div ref={containerRef} className="flex-1 overflow-hidden relative">
         <div className="animate-scroll-up space-y-2">

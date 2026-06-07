@@ -10,6 +10,7 @@ interface Props {
   compareMode?: boolean;
   yesterdaySales?: number;
   yesterdayOrders?: number;
+  isRefreshing?: boolean;
 }
 
 function AnimatedNumber({ value, prefix = '' }: { value: number; prefix?: string }) {
@@ -56,6 +57,7 @@ export default function SalesNumbers({
   compareMode,
   yesterdaySales,
   yesterdayOrders,
+  isRefreshing = true,
 }: Props) {
   return (
     <div className="grid grid-cols-2 gap-4">
@@ -63,6 +65,9 @@ export default function SalesNumbers({
         <div className="flex items-center gap-2 text-gray-400 text-sm mb-1">
           <TrendingUp size={16} className="text-accent" />
           今日销售额
+          <span className={`ml-auto inline-block w-2 h-2 rounded-full ${
+            isRefreshing ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'
+          }`} />
         </div>
         <div className="text-3xl font-bold text-white tracking-tight">
           <AnimatedNumber value={sales} prefix="¥" />

@@ -5,9 +5,10 @@ interface Props {
   data: MinuteOrder[];
   compareMode?: boolean;
   yesterdayData?: MinuteOrder[];
+  isRefreshing?: boolean;
 }
 
-export default function MinuteOrdersChart({ data, compareMode, yesterdayData }: Props) {
+export default function MinuteOrdersChart({ data, compareMode, yesterdayData, isRefreshing = true }: Props) {
   const series = [
     {
       name: '今日订单量',
@@ -85,7 +86,12 @@ export default function MinuteOrdersChart({ data, compareMode, yesterdayData }: 
 
   return (
     <div className="bg-panel-bg rounded-xl p-4 h-full flex flex-col border border-gray-800">
-      <h3 className="text-sm font-semibold text-gray-200 mb-2">近一小时每分钟订单量</h3>
+      <h3 className="text-sm font-semibold text-gray-200 mb-2 flex items-center">
+        近一小时每分钟订单量
+        <span className={`ml-2 inline-block w-2 h-2 rounded-full ${
+          isRefreshing ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'
+        }`} />
+      </h3>
       <div className="flex-1 min-h-0">
         <ReactECharts option={option} style={{ height: '100%', width: '100%' }} />
       </div>

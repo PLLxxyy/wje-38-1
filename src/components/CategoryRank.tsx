@@ -5,9 +5,10 @@ interface Props {
   data: CategoryRank[];
   compareMode?: boolean;
   yesterdayData?: CategoryRank[];
+  isRefreshing?: boolean;
 }
 
-export default function CategoryRankChart({ data, compareMode, yesterdayData }: Props) {
+export default function CategoryRankChart({ data, compareMode, yesterdayData, isRefreshing = true }: Props) {
   const series: any[] = [];
 
   if (compareMode && yesterdayData) {
@@ -80,7 +81,12 @@ export default function CategoryRankChart({ data, compareMode, yesterdayData }: 
 
   return (
     <div className="bg-panel-bg rounded-xl p-4 h-full flex flex-col border border-gray-800">
-      <h3 className="text-sm font-semibold text-gray-200 mb-2">品类销售排行榜</h3>
+      <h3 className="text-sm font-semibold text-gray-200 mb-2 flex items-center">
+        品类销售排行榜
+        <span className={`ml-2 inline-block w-2 h-2 rounded-full ${
+          isRefreshing ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'
+        }`} />
+      </h3>
       <div className="flex-1 min-h-0">
         <ReactECharts option={option} style={{ height: '100%', width: '100%' }} />
       </div>
