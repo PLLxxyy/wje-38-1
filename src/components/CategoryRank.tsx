@@ -3,9 +3,47 @@ import type { CategoryRank } from '../types';
 
 interface Props {
   data: CategoryRank[];
+  compareMode?: boolean;
+  yesterdayData?: CategoryRank[];
 }
 
-export default function CategoryRankChart({ data }: Props) {
+export default function CategoryRankChart({ data, compareMode, yesterdayData }: Props) {
+  const series: any[] = [];
+
+  if (compareMode && yesterdayData) {
+    const yesterdayMap = new Map(yesterdayData.map((d) => [d.name, d.value]));
+    series.push({
+      name: '昨日',
+      type: 'bar',
+      data: data.map((d) => ({
+        value: yesterdayMap.get(d.name) || 0,
+        itemStyle: { color: 'rgba(6,182,212,0.3)', borderRadius: [0, 4, 4, 0] },
+      })).reverse(),
+      barWidth: 10,
+      barGap: '30%',
+      label: {
+        show: false,
+      },
+    });
+  }
+
+  series.push({
+    name: '今日',
+    type: 'bar',
+    data: data.map((d) => ({
+      value: d.value,
+      itemStyle: { color: d.color, borderRadius: [0, 4, 4, 0] },
+    })).reverse(),
+    barWidth: 14,
+    label: {
+      show: true,
+      position: 'right',
+      color: '#9ca3af',
+      fontSize: 10,
+      formatter: (p: any) => (p.value >= 10000 ? (p.value / 10000).toFixed(1) + '万' : p.value),
+    },
+  });
+
   const option = {
     backgroundColor: 'transparent',
     tooltip: {
@@ -15,7 +53,15 @@ export default function CategoryRankChart({ data }: Props) {
       borderColor: '#374151',
       textStyle: { color: '#e5e7eb' },
     },
-    grid: { left: 80, right: 48, top: 16, bottom: 16 },
+    legend: {
+      show: compareMode,
+      top: 0,
+      right: 0,
+      textStyle: { color: '#9ca3af', fontSize: 11 },
+      itemWidth: 16,
+      itemHeight: 8,
+    },
+    grid: { left: 80, right: 48, top: compareMode ? 32 : 16, bottom: 16 },
     xAxis: {
       type: 'value',
       axisLine: { show: false },
@@ -29,23 +75,7 @@ export default function CategoryRankChart({ data }: Props) {
       axisLabel: { color: '#e5e7eb', fontSize: 11 },
       axisTick: { show: false },
     },
-    series: [
-      {
-        type: 'bar',
-        data: data.map((d) => ({
-          value: d.value,
-          itemStyle: { color: d.color, borderRadius: [0, 4, 4, 0] },
-        })).reverse(),
-        barWidth: 14,
-        label: {
-          show: true,
-          position: 'right',
-          color: '#9ca3af',
-          fontSize: 10,
-          formatter: (p: any) => (p.value >= 10000 ? (p.value / 10000).toFixed(1) + '万' : p.value),
-        },
-      },
-    ],
+    series,
   };
 
   return (

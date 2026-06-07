@@ -26,3 +26,12 @@ export interface MinuteOrder {
   time: string;
   value: number;
 }
+
+export interface YesterdayData {
+  sales: number;
+  orders: number;
+  categories: CategoryRank[];
+  provinces: ProvinceData[];
+  orderStatus: OrderStatus[];
+  minuteOrders: MinuteOrder[];
+}

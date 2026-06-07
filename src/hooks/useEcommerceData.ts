@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import type { OrderItem, CategoryRank, ProvinceData, OrderStatus, MinuteOrder } from '../types';
+import type { OrderItem, CategoryRank, ProvinceData, OrderStatus, MinuteOrder, YesterdayData } from '../types';
 import { getCurrentTime, PROVINCE_NAMES } from '../utils/helpers';
 
 const USERS = ['张**', '李**', '王**', '赵**', '刘**', '陈**', '杨**', '黄**', '周**', '吴**'];
@@ -51,13 +51,37 @@ function generateOrderStatus(): OrderStatus[] {
   ];
 }
 
-function generateMinuteOrders(): MinuteOrder[] {
+function generateMinuteOrders(offsetDays: number = 0): MinuteOrder[] {
   const now = new Date();
+  now.setDate(now.getDate() - offsetDays);
   return Array.from({ length: 60 }, (_, i) => {
     const t = new Date(now.getTime() - (59 - i) * 60000);
     const label = `${t.getHours().toString().padStart(2, '0')}:${t.getMinutes().toString().padStart(2, '0')}`;
     return { time: label, value: Math.floor(Math.random() * 200) + 50 };
   });
+}
+
+function generateYesterdayData(): YesterdayData {
+  return {
+    sales: Math.floor(Math.random() * 3000000) + 10000000,
+    orders: Math.floor(Math.random() * 5000) + 28000,
+    categories: CATEGORIES.map((c) => ({
+      name: c.name,
+      value: Math.floor(Math.random() * 80000) + 20000,
+      color: c.color,
+    })).sort((a, b) => b.value - a.value),
+    provinces: PROVINCE_NAMES.map((name) => ({
+      name,
+      value: Math.floor(Math.random() * 500000) + 10000,
+    })),
+    orderStatus: [
+      { name: '待付款', value: Math.floor(Math.random() * 500) + 100 },
+      { name: '待发货', value: Math.floor(Math.random() * 800) + 200 },
+      { name: '已发货', value: Math.floor(Math.random() * 1200) + 300 },
+      { name: '已完成', value: Math.floor(Math.random() * 3000) + 1000 },
+    ],
+    minuteOrders: generateMinuteOrders(1),
+  };
 }
 
 export function useEcommerceData() {
@@ -70,6 +94,9 @@ export function useEcommerceData() {
   const [provinces, setProvinces] = useState<ProvinceData[]>(generateProvinces());
   const [orderStatus, setOrderStatus] = useState<OrderStatus[]>(generateOrderStatus());
   const [minuteOrders, setMinuteOrders] = useState<MinuteOrder[]>(generateMinuteOrders);
+  const [compareMode, setCompareMode] = useState(false);
+  const [yesterdayData, setYesterdayData] = useState<YesterdayData>(generateYesterdayData);
+  const [isRefreshing, setIsRefreshing] = useState(true);
 
   const prevSalesRef = useRef(sales);
   const prevOrdersRef = useRef(orders);
@@ -104,9 +131,21 @@ export function useEcommerceData() {
   }, [sales, orders]);
 
   useEffect(() => {
+    if (!isRefreshing) return;
     const interval = setInterval(tick, 4000);
     return () => clearInterval(interval);
-  }, [tick]);
+  }, [tick, isRefreshing]);
+
+  const toggleCompareMode = useCallback(() => {
+    setCompareMode((prev) => {
+      const next = !prev;
+      if (next) {
+        setYesterdayData(generateYesterdayData());
+      }
+      setIsRefreshing(next ? false : true);
+      return next;
+    });
+  }, []);
 
   return {
     sales,
@@ -118,5 +157,9 @@ export function useEcommerceData() {
     provinces,
     orderStatus,
     minuteOrders,
+    compareMode,
+    isRefreshing,
+    yesterdayData,
+    toggleCompareMode,
   };
 }

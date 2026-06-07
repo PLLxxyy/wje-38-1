@@ -7,6 +7,9 @@ interface Props {
   orders: number;
   salesGrowth: number;
   orderGrowth: number;
+  compareMode?: boolean;
+  yesterdaySales?: number;
+  yesterdayOrders?: number;
 }
 
 function AnimatedNumber({ value, prefix = '' }: { value: number; prefix?: string }) {
@@ -45,7 +48,15 @@ function AnimatedNumber({ value, prefix = '' }: { value: number; prefix?: string
   );
 }
 
-export default function SalesNumbers({ sales, orders, salesGrowth, orderGrowth }: Props) {
+export default function SalesNumbers({
+  sales,
+  orders,
+  salesGrowth,
+  orderGrowth,
+  compareMode,
+  yesterdaySales,
+  yesterdayOrders,
+}: Props) {
   return (
     <div className="grid grid-cols-2 gap-4">
       <div className="bg-panel-bg rounded-xl p-4 border border-gray-800 flex flex-col justify-center">
@@ -56,6 +67,11 @@ export default function SalesNumbers({ sales, orders, salesGrowth, orderGrowth }
         <div className="text-3xl font-bold text-white tracking-tight">
           <AnimatedNumber value={sales} prefix="¥" />
         </div>
+        {compareMode && yesterdaySales !== undefined && (
+          <div className="text-xs text-cyan-400 mt-1">
+            昨日同期: ¥{yesterdaySales.toLocaleString()}
+          </div>
+        )}
         <div className={`text-xs mt-1 flex items-center gap-1 ${salesGrowth >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
           {salesGrowth >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
           {salesGrowth >= 0 ? '+' : ''}{salesGrowth.toFixed(1)}% 较昨日
@@ -69,6 +85,11 @@ export default function SalesNumbers({ sales, orders, salesGrowth, orderGrowth }
         <div className="text-3xl font-bold text-white tracking-tight">
           <AnimatedNumber value={orders} />
         </div>
+        {compareMode && yesterdayOrders !== undefined && (
+          <div className="text-xs text-cyan-400 mt-1">
+            昨日同期: {yesterdayOrders.toLocaleString()}
+          </div>
+        )}
         <div className={`text-xs mt-1 flex items-center gap-1 ${orderGrowth >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
           {orderGrowth >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
           {orderGrowth >= 0 ? '+' : ''}{orderGrowth.toFixed(1)}% 较昨日
